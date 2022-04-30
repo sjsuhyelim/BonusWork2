@@ -174,62 +174,62 @@ def main():
     print('Eval loss: {}, Eval Accuracy: {}'.format(eval_loss, eval_acc))
 
 if __name__ == '__main__':
-    main()
-    # def loadimage(path, img_height, img_width):
-    #     # load image
-    #     image = Image.open(path).resize((img_width, img_height))
-    #     image = np.array(image)
-    #     # print(np.min(image), np.max(image))#0~255
-    #     input = image[np.newaxis, ...]
-    #     input_data = np.array(input, dtype=np.float32)
-    #     # normalize to the range 0-1
-    #     input_data /= 255.0
-    #     # print(np.min(input_data), np.max(input_data))
-    #     return input_data
-    # model = tf.keras.models.load_model('/Users/hyelim_yang/Documents/BonusWork2/outputs/flower_xceptionmodel1_0712/')
-    # CLASSES = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
-    # height = 180
-    # width = 180
-    # test_img_path = '/Users/hyelim_yang/Documents/BonusWork2/tests/imgdata'
-    # data_dir = pathlib.Path(test_img_path)
-    # filelist = (test_img_path + '/*.jpg')
-    # datapattern = glob.glob(filelist)
-    # image_count = len(datapattern)
-    # #print('length of images', image_count)
-    # # Check the prediction with tests data set
-    # print('--------- Test the model with few images ---------')
-    # for image_path in datapattern:
-    #     input_data = loadimage(image_path, height, width)
-    #     preds = model.predict(input_data)
-    #     score = tf.nn.softmax(preds[0])
-    #
-    #     output = preds.argsort()[-1][-1]
-    #     label_prediction = CLASSES[output]
-    #     true = image_path.split('/')[-1].split('.')[0]
-    #     print('Prediction: {}, true label: {}'.format(label_prediction, true))
-    #
-    #
-    #
-    #
-    # # Benchmarking throughput
-    # N_warmup_run = 10
-    # N_run = 100
-    # elapsed_time = []
-    #
-    # for _ in range(N_warmup_run):
-    #     for image_path in datapattern:
-    #         input_data = loadimage(image_path, height, width)
-    #         preds = model.predict(input_data)
-    #
-    # for i in range(N_run):
-    #     for image_path in datapattern:
-    #         input_data = loadimage(image_path, height, width)
-    #         start_time = time.time()
-    #         preds = model.predict(input_data)
-    #         stop_time = time.time()
-    #         elapsed_time = np.append(elapsed_time, stop_time - start_time)
-    #     if i % 5 == 0:
-    #         print('Step {}: {:4.1f}ms'.format(i, (elapsed_time[-5:].mean()) * 100))
-    #
-    # print('Throughput: {:.0f} images/s'.format(N_run * image_count / elapsed_time.sum()))
+    #main()
+    def loadimage(path, img_height, img_width):
+        # load image
+        image = Image.open(path).resize((img_width, img_height))
+        image = np.array(image)
+        # print(np.min(image), np.max(image))#0~255
+        input = image[np.newaxis, ...]
+        input_data = np.array(input, dtype=np.float32)
+        # normalize to the range 0-1
+        input_data /= 255.0
+        # print(np.min(input_data), np.max(input_data))
+        return input_data
+    model = tf.keras.models.load_model('/Users/hyelim_yang/Documents/BonusWork2/outputs/flower_xceptionmodel1_0712/')
+    CLASSES = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
+    height = 180
+    width = 180
+    test_img_path = '/Users/hyelim_yang/Documents/BonusWork2/tests/imgdata'
+    data_dir = pathlib.Path(test_img_path)
+    filelist = (test_img_path + '/*.jpg')
+    datapattern = glob.glob(filelist)
+    image_count = len(datapattern)
+    #print('length of images', image_count)
+    # Check the prediction with tests data set
+    print('--------- Test the model with few images ---------')
+    for image_path in datapattern:
+        input_data = loadimage(image_path, height, width)
+        preds = model.predict(input_data)
+        score = tf.nn.softmax(preds[0])
+
+        output = preds.argsort()[-1][-1]
+        label_prediction = CLASSES[output]
+        true = image_path.split('/')[-1].split('.')[0]
+        print('Prediction: {}, true label: {}'.format(label_prediction, true))
+
+
+
+
+    # Benchmarking throughput
+    N_warmup_run = 10
+    N_run = 100
+    elapsed_time = []
+
+    for _ in range(N_warmup_run):
+        for image_path in datapattern:
+            input_data = loadimage(image_path, height, width)
+            preds = model.predict(input_data)
+
+    for i in range(N_run):
+        for image_path in datapattern:
+            input_data = loadimage(image_path, height, width)
+            start_time = time.time()
+            preds = model.predict(input_data)
+            stop_time = time.time()
+            elapsed_time = np.append(elapsed_time, stop_time - start_time)
+        if i % 5 == 0:
+            print('Step {}: {:4.1f}ms'.format(i, (elapsed_time[-5:].mean()) * 100))
+
+    print('Throughput: {:.0f} images/s'.format(N_run * image_count / elapsed_time.sum()))
 
