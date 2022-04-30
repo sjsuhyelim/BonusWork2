@@ -27,6 +27,7 @@ def show_oneimage(image_batch, label_batch):
     fig = plt.figure(figsize=(10, 10))
     plt.imshow(image_batch)
     plt.title(label_batch.numpy().title())
+    #print('-------------Im here-------------')
     fig.savefig('./outputs/plotoneimage.png')#
 
 def resize_and_crop_image(image, label):
@@ -92,6 +93,7 @@ def to_tfrecord(tfrec_filewriter, img_bytes, label, height, width):
 def main(Path, PATH_OUTPUT='./outputs/TFrecord/', SHARDS = 16):
     #Path='/home/lkk/.keras/datasets/flower_photos'
     File_pattern = Path+'/*/*.jpg' #GCS_PATTERN = 'gs://flowers-public/*/*.jpg'
+
     AUTO = tf.data.experimental.AUTOTUNE # used in tf.data.Dataset API
     #GCS_OUTPUT = 'gs://flowers-public/tfrecords-jpeg-192x192-2/flowers'  # prefix for output file names
     #SHARDS = 16
@@ -146,5 +148,6 @@ def main(Path, PATH_OUTPUT='./outputs/TFrecord/', SHARDS = 16):
             print("Wrote file {} containing {} records".format(filename, shard_size))
 
 if __name__ == '__main__':
-    Path='/home/lkk/.keras/datasets/flower_photos'
+    Path = '/Users/hyelim_yang/.keras/datasets/flower_photos'
+    #Path='/home/lkk/.keras/datasets/flower_photos'
     main(Path)

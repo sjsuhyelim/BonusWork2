@@ -11,9 +11,9 @@ print('Beginning file download with urllib2...')
 #Download the flower data from this link: https://s3.amazonaws.com/video.udacity-data.com/topher/2018/September/5baa60a0_flower-photos/flower-photos.zip
 
 url = 'https://s3.amazonaws.com/video.udacity-data.com/topher/2018/September/5baa60a0_flower-photos/flower-photos.zip'
-extract_dir = '/Developer/MyRepo/ImageClassificationData'
+extract_dir = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2'
 zip_path, _ = urllib.request.urlretrieve(url, os.path.join(extract_dir, 'flower-photos.zip'))
 with zipfile.ZipFile(zip_path, "r") as f:
     f.extractall(extract_dir)
 
-#test  train under /Developer/MyRepo/ImageClassificationData/flower_photos
+#test  train under /Users/hyelim_yang/Documents/CMPE255_BonusWork2/flower_photos

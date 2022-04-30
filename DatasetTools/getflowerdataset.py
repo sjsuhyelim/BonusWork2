@@ -9,7 +9,7 @@ data_dir = tf.keras.utils.get_file(origin=dataset_url,
                                    fname='flower_photos', 
                                    untar=True)
 data_dir = pathlib.Path(data_dir)
-print(data_dir) #/home/kaikai/.keras/datasets/flower_photos
+print(data_dir) #/Users/hyelim_yang/.keras/datasets/flower_photos
 image_count = len(list(data_dir.glob('*/*.jpg')))
 print(image_count) #3670
 
