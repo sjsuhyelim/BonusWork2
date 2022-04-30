@@ -37,6 +37,6 @@ Flower recognition data
 ### TF model running in Google Colab with GPU (NVIDIA-SMI)
 ![](results/TF_model_ColabGPU_inference_testing.png)
 
-As you can see the result, TF model running in M1 chip Macbook is the fastest with 28 images prediction per second. 
-TFLite model running in M1 chip Macbook is the second highest with 22 images predictions per second 
+As you can see the result, TF model running in M1 chip Macbook is the fastest with 22 images prediction per second. 
+TFLite model running in M1 chip Macbook is the second highest with 19 images predictions per second 
 and then TF model running in Google Colab with NVIDIA GPU shows the slowest speed, 10 images per second.
