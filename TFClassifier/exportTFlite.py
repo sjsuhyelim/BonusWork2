@@ -140,7 +140,7 @@ def loadimageint(path, img_height, img_width):
     return input_data
 
 if __name__ == '__main__':
-    saved_model_dir = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/outputs/flower_xceptionmodel1_0712/'
+    saved_model_dir = '/Users/hyelim_yang/Documents/BonusWork2/outputs/flower_xceptionmodel1_0712/'
     #testtfliteexport(saved_model_dir)
     #tflitequanexport(saved_model_dir)
     #tflitequanintexport(saved_model_dir)
@@ -150,8 +150,8 @@ if __name__ == '__main__':
     #testtfliteinference("converted_model_quantint.tflite")
 
     ### Reference: https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/examples/python/label_image.py
-    model_file_path = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/converted_model.tflite'
-    test_img_path = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/tests/imgdata'
+    model_file_path = '/Users/hyelim_yang/Documents/BonusWork2/converted_model.tflite'
+    test_img_path = '/Users/hyelim_yang/Documents/BonusWork2/tests/imgdata'
 
     interpreter = tf.lite.Interpreter(
         model_path=model_file_path,
