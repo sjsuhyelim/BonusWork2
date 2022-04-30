@@ -3,6 +3,8 @@ import numpy as np
 import argparse
 from PIL import Image
 import time
+import pathlib
+import glob
 import io
 from numpy import asarray
 #import tflite_runtime.interpreter as tflite
@@ -22,7 +24,7 @@ def tflitequanexport(saved_model_dir):
 
     #val_ds=None
     from TFClassifier.Datasetutil.TFdatasetutil import loadTFdataset
-    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/home/lkk/Developer/MyRepo/MultiModalClassifier/outputs/TFrecord', 180, 180, 32)
+    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/outputs/TFrecord', 180, 180, 32)
     def representative_data_gen():
         for input_value, _ in val_ds.take(100):
             yield [input_value]
@@ -45,7 +47,7 @@ def tflitequanintexport(saved_model_dir):
 
     #val_ds=None
     from TFClassifier.Datasetutil.TFdatasetutil import loadTFdataset
-    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/home/lkk/Developer/MyRepo/MultiModalClassifier/outputs/TFrecord', 180, 180, 32)
+    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/outputs/TFrecord', 180, 180, 32)
     def representative_data_gen():
         for input_value, _ in val_ds.take(100):
             yield [input_value]
@@ -82,7 +84,7 @@ def testtfliteinference(tflite_model_path):
     floating_model = input_details[0]['dtype'] == np.float32
 
     #image_path='/home/lkk/Developer/MyRepo/MultiModalClassifier/tests/imgdata/sunflower.jpeg'
-    image_path='/home/lkk/Developer/MyRepo/MultiModalClassifier/tests/imgdata/rose2.jpeg'
+    image_path='/Users/hyelim_yang/Documents/CMPE255_BonusWork2/tests/imgdata/rose2.jpeg'
     img_height = input_shape[1] #180
     img_width = input_shape[2] #180
 
@@ -115,12 +117,12 @@ def loadimage(path, img_height, img_width):
     # load image
     image = Image.open(path).resize((img_width, img_height))
     image = np.array(image)
-    print(np.min(image), np.max(image))#0~255
+    #print(np.min(image), np.max(image))#0~255
     input=image[np.newaxis, ...]
     input_data = np.array(input, dtype=np.float32)
     # normalize to the range 0-1
     input_data /= 255.0
-    print(np.min(input_data), np.max(input_data)) 
+    #print(np.min(input_data), np.max(input_data))
     return input_data
 
 def loadimageint(path, img_height, img_width):
@@ -138,12 +140,87 @@ def loadimageint(path, img_height, img_width):
     return input_data
 
 if __name__ == '__main__':
-    saved_model_dir = '/home/lkk/Developer/MyRepo/MultiModalClassifier/outputs/flower_xceptionmodel1_0712/'
+    saved_model_dir = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/outputs/flower_xceptionmodel1_0712/'
     #testtfliteexport(saved_model_dir)
     #tflitequanexport(saved_model_dir)
     #tflitequanintexport(saved_model_dir)
 
-    #testtfliteinference("converted_model_quant.tflite")#"converted_model.tflite"
-    testtfliteinference("converted_model_quantint.tflite")
 
-    
+    #testtfliteinference("converted_model_quant.tflite")#"converted_model.tflite"
+    #testtfliteinference("converted_model_quantint.tflite")
+
+    ### Reference: https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/examples/python/label_image.py
+    model_file_path = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/converted_model.tflite'
+    test_img_path = '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/tests/imgdata'
+
+    interpreter = tf.lite.Interpreter(
+        model_path=model_file_path,
+        experimental_delegates=None,
+        num_threads=None)
+    interpreter.allocate_tensors()
+
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
+    # check the type of the input tensor
+    floating_model = input_details[0]['dtype'] == np.float32
+
+    # NxHxWxC, H:1, W:2
+    height = input_details[0]['shape'][1]
+    width = input_details[0]['shape'][2]
+
+
+    CLASSES = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
+    data_dir = pathlib.Path(test_img_path)
+    filelist = (test_img_path + '/*.jpg')
+    datapattern = glob.glob(filelist)
+    image_count = len(datapattern)
+
+    # Check the prediction with tests data set
+    print('--------- Test the model with few images ---------')
+    for image_path in datapattern:
+        input_data = loadimage(image_path, height, width)
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+
+        interpreter.invoke()
+
+        output_data = interpreter.get_tensor(output_details[0]['index'])
+        results = np.squeeze(output_data)
+        prob = results[results.argsort()[::-1][0]]
+        predicted = CLASSES[results.argsort()[::-1][0]]
+        true = image_path.split('/')[-1].split('.')[0]
+        print('prob: {:.3f}, prediction: {}, true label: {}'.format(prob, predicted, true))
+
+
+    # Benchmarking throughput
+    N_warmup_run = 10
+    N_run = 100
+    elapsed_time = []
+
+    for _ in range(N_warmup_run):
+        for image_path in datapattern:
+            input_data = loadimage(image_path, height, width)
+            interpreter.set_tensor(input_details[0]['index'], input_data)
+            interpreter.invoke()
+
+    for i in range(N_run):
+        for image_path in datapattern:
+            input_data = loadimage(image_path, height, width)
+            interpreter.set_tensor(input_details[0]['index'], input_data)
+            start_time = time.time()
+            interpreter.invoke()
+            stop_time = time.time()
+            output_data = interpreter.get_tensor(output_details[0]['index'])
+            # results = np.squeeze(output_data)
+            # prob = results[results.argsort()[::-1][0]]
+            # predicted = CLASSES[results.argsort()[::-1][0]]
+            # true = image_path.split('/')[-1].split('.')[0]
+            # print('prob: {:.3f}, prediction: {}, true label: {}'.format(prob, predicted, true))
+            elapsed_time = np.append(elapsed_time, stop_time - start_time)
+            #tot_time += stop_time - start_time
+
+        if i % 5 == 0:
+            print('Step {}: {:4.1f}ms'.format(i, (elapsed_time[-5:].mean()) * 100))
+
+    print('Throughput: {:.0f} images/s'.format(N_run * image_count / elapsed_time.sum()))
+
