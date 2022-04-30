@@ -24,7 +24,7 @@ def tflitequanexport(saved_model_dir):
 
     #val_ds=None
     from TFClassifier.Datasetutil.TFdatasetutil import loadTFdataset
-    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/outputs/TFrecord', 180, 180, 32)
+    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/Users/hyelim_yang/Documents/BonusWork2/outputs/TFrecord', 180, 180, 32)
     def representative_data_gen():
         for input_value, _ in val_ds.take(100):
             yield [input_value]
@@ -47,7 +47,7 @@ def tflitequanintexport(saved_model_dir):
 
     #val_ds=None
     from TFClassifier.Datasetutil.TFdatasetutil import loadTFdataset
-    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/Users/hyelim_yang/Documents/CMPE255_BonusWork2/outputs/TFrecord', 180, 180, 32)
+    train_ds, val_ds, class_names, imageshape = loadTFdataset('flower', 'customtfrecordfile', '/Users/hyelim_yang/Documents/BonusWork2/outputs/TFrecord', 180, 180, 32)
     def representative_data_gen():
         for input_value, _ in val_ds.take(100):
             yield [input_value]
@@ -84,7 +84,7 @@ def testtfliteinference(tflite_model_path):
     floating_model = input_details[0]['dtype'] == np.float32
 
     #image_path='/home/lkk/Developer/MyRepo/MultiModalClassifier/tests/imgdata/sunflower.jpeg'
-    image_path='/Users/hyelim_yang/Documents/CMPE255_BonusWork2/tests/imgdata/rose2.jpeg'
+    image_path='/Users/hyelim_yang/Documents/BonusWork2/tests/imgdata/rose2.jpeg'
     img_height = input_shape[1] #180
     img_width = input_shape[2] #180
 

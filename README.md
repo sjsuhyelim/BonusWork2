@@ -9,10 +9,10 @@ Flower recognition data
 
 ## Create models
 - Using [myTFDistributedTrainerv2.py](myTFDistributedTrainerv2.py), flower_xceptionmodel1_0712 model is created and then saved.
-- Using [exportTFlite](\TFClassifier\exportTFlite.py) file in TFClassifier, TensorFlowLite model is created and then saved.
+- Using [exportTFlite](TFClassifier/exportTFlite.py) file in TFClassifier, TensorFlowLite model is created and then saved.
 
 ## Modified codes
-- Using [exportTFlite](\TFClassifier\exportTFlite.py) file in TFClassifier, inference testing with TensorFlowLite model was performed in M1 Macbook.
+- Using [exportTFlite](TFClassifier/exportTFlite.py)file in TFClassifier, inference testing with TensorFlowLite model was performed in M1 Macbook.
 - Using [myTFDistributedTrainerv2.py](myTFDistributedTrainerv2.py), inference testing with native TensorFlow model was performed in M1 Macbook.
 - Using this [Colab](https://colab.research.google.com/drive/1wF2q4gNd_zMyg9j_HH2KlUWbAw8TgX9a?usp=sharing), inference testing with TensorFlow model was performed in Google Colab GPU
 
